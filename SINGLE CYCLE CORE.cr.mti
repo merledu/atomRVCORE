@@ -1,0 +1,14 @@
+{E:/SV CORE/ALU_CONTROL.sv} {1 {vlog -work work -vopt -sv -stats=none {E:/SV CORE/ALU_CONTROL.sv}
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+
+} {} {}} {E:/SV CORE/ALU.sv} {1 {vlog -work work -vopt -sv -stats=none {E:/SV CORE/ALU.sv}
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+
+} {} {}} {E:/SV CORE/FETCH_UNIT.sv} {1 {vlog -work work -vopt -sv -stats=none {E:/SV CORE/FETCH_UNIT.sv}
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module FETCH_UNIT
+
+Top level modules:
+	FETCH_UNIT
+
+} {} {}}
