@@ -22,10 +22,10 @@ module FETCH_UNIT
     	 end
 
     	else if (BE_i) begin     // if Branch enable then PC = PC + immediate
-    		PC_o <= PC_o + immed_i;
+    		PC_o <= PC_o + {immed_i[30:0],1'b0};
     	 end
         else if (UJE_i) begin    // if UJ enable then PC = PC + immediate ,R[rd] = PC + 4
-    		PC_o <= PC_o + immed_i; 
+    		PC_o <= PC_o +  {immed_i[30:0],1'b0};
     		REGD_o <= PC_o + 32'd4;
     	 end
     	else if (JALRE_i) begin // if Jump and link enable then PC = R[rs1] + immediate ,R[rd] = PC + 4
