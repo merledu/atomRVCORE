@@ -280,7 +280,6 @@ module CONTROL
                 		    7'h0: begin
 
                               RWR_EN_o=1'b1;
-                              sgn_o=1'b1;
                               ALUop_o=6'd3;//SLTIU
 
                 		     end
@@ -328,7 +327,6 @@ module CONTROL
                             
                              RWR_EN_o=1'b1;
                              ALUop_o=6'd6;//SRAI
-                             arth_o=1'b1;
 
                 		     end
 
@@ -393,7 +391,7 @@ module CONTROL
                 		    7'h0: begin
 
                              RWR_EN_o=1'b1;
-                             ALUop_o=6'd9;//ADDIW
+                             ALUop_o=6'd0;//ADDIW
 
                 		     end
                 		    7'h20: begin
@@ -414,7 +412,7 @@ module CONTROL
                 		    7'h0: begin
 
                              RWR_EN_o=1'b1;
-                             ALUop_o=6'd10;//SLLIW
+                             ALUop_o=6'd1;//SLLIW
 
                 		     end
                 		    7'h20: begin
@@ -491,14 +489,13 @@ module CONTROL
                 		    7'h0: begin
 
                              RWR_EN_o=1'b1;
-                             ALUop_o=6'd11;//SRLIW
+                             ALUop_o=6'd5;//SRLIW
 
                 		     end
                 		    7'h20: begin
                            
                              RWR_EN_o=1'b1;
-                             ALUop_o=6'd12;//SRAIW
-                             arth_o=1'b1;
+                             ALUop_o=6'd6;//SRAIW
 
                 		     end
 
@@ -562,7 +559,7 @@ module CONTROL
 
                              JALRE_o=1'b1;
                              RWR_EN_o=1'b1;
-                             ALUop_o=6'd13;//JALR
+                             ALUop_o=6'd9;//JALR
 
                 		     end
                 		    7'h20: begin
