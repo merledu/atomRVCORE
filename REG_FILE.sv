@@ -1,42 +1,60 @@
-
+timeunit 1ns; timeprecision 1ns;
 module REG_FILE (
 	input clk_i,    // Clock
-	input regrst_i,  // Asynchronous reset active low
+	input regrst_i,  // Asynchronous reset active HIGH
 	input logic [4:0] RS1_i,
 	input logic [4:0] RS2_i,
 	input logic [4:0] RD_i,
 	output logic [31:0] R1_o,
 	output logic [31:0] R2_o,
 	input logic [31:0] WR_i,
-	input logic RWR_EN_i,
-	input logic RR_EN_i,
-	      logic [31:0] R [32]
+	input logic RWR_EN_i
  );
+logic [31:0] R [0:31];
+integer i;
 
- always_ff @(posedge clk_i or negedge regrst_i) begin
-	    
-	    if(~regrst_i) begin
-		  
-		    for (int i = 0; i < 32; i++) begin
-		     R[i] <= 32'd0;
-		     end
-	
-	     end 
-	    else begin
-		 R[0] <=32'd0;
-		     if (RWR_EN_i == 1'b1 && RD_i != 5'b00000) begin
+initial begin
 
-		     	R[RD_i] <= WR_i;
+    for (i=0;i<32;i++)begin
 
-		     end
-
-		     
-		  R1_o <= R[RS1_i];
-		  R2_o <= R[RS2_i]; 
-		    
-
-	     end
+     R[i] = 0;
 
      end
+
+end
+
+
+
+always @ (posedge clk_i)begin
+
+    if (regrst_i==1'b1) begin
+
+        for (i=0;i<32;i++)
+
+            R[i]<=0;
+
+        end
+
+    else if (regrst_i==1'b0 && RWR_EN_i==1'b1)begin
+
+            if (RD_i==5'd0)
+
+                R[0]<=32'h00000000;
+
+            else
+
+                R[RD_i]<=WR_i;       
+
+        end
+
+end
+
+
+
+assign R1_o = R[RS1_i];
+
+assign R2_o = R[RS2_i];
+
+
 
  endmodule : REG_FILE
