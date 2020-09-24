@@ -1,11 +1,10 @@
 module CONTROL 
 	(
-	 input clk_i,    // Clock
-	 input cntrst_i,  // Asynchronous reset active low
 	 input logic [6:0] opcode_i,
 	 input logic [2:0] func3_i,
 	 input logic [6:0] func7_i,
 	 output logic I_EN_o,//I TYPE INSTRUCTION ENABLE FROM CONTROL
+     output logic R_EN_o,
 	 output logic S_EN_o,//S TYPE INSTRUCTION ENABLE FROM CONTROL
 	 output logic SB_EN_o,//SB TYPE INSTRUCTION ENABLE FROM CONTROL
 	 output logic U_EN_o,//U TYPE INSTRUCTION ENABLE FROM CONTROL
@@ -15,9 +14,7 @@ module CONTROL
 	 output logic JALRE_o,//JUMP AND LINK ENABLE SIGNAL FROM CONTROL UNIT FETCH
 	 output logic UJE_o,//UJ ENABLE SIGNAL FROM CONTROL UNIT TO FETCH
 	 output logic IWR_EN_o,//INSTRUCTION WRITE ENABLE SIGNAL TO WRITE ON INSTRUCTION MEM
-	 output logic [5:0] ALUop_o,//ALU OPCODE SWITCH FOR OPERATION
-	 output logic sgn_o,
-	 output logic arth_o
+	 output logic [5:0] ALUop_o//ALU OPCODE SWITCH FOR OPERATION
 
      );
 
@@ -25,6 +22,7 @@ module CONTROL
         
 
         I_EN_o =1'b0;
+        R_EN_o =1'b0;
 	    S_EN_o=1'b0;
         SB_EN_o=1'b0;
         U_EN_o=1'b0;
@@ -35,8 +33,6 @@ module CONTROL
 	    UJE_o=1'b0;
 	    IWR_EN_o=1'b0;
 	    ALUop_o=6'd0;
-	    arth_o=1'b0;
-	    sgn_o=1'b0;
 
 
 
