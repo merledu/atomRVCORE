@@ -1,7 +1,7 @@
 timeunit 1ns; timeprecision 1ns;
 module DECODE_UNIT (
 	
-	input clk_i,    // Clock
+    
 	input logic [31:0] instr_i,//32 BIT INSTRUCTION FROM INSTRUCTION MEM
 	input logic I_EN_i,//I TYPE INSTRUCTION ENABLE FROM CONTROL
 	input logic R_EN_i,//R TYPE INSTRUCTION ENABLE FROM CONTROL

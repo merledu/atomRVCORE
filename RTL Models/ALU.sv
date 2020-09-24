@@ -1,12 +1,12 @@
 module ALU (
 	input clk_i,    // Clock
-	input alu_rst_i,  // Asynchronous reset active low
-	input logic [5:0] ALUop_i,//opcode to identif the instructions
+	input logic [5:0] ALUop_i,//opcode to identify the instructions
 	input logic [31:0] operand_A,
 	input logic [31:0] operand_B,
 	output logic [31:0] result_o,
 	       logic [4:0] shamt
 	);
+  timeunit 1ns; timeprecision 1ns;
 
   always_comb begin 
         assign shamt = operand_B[4:0];

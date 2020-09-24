@@ -46,6 +46,8 @@ module tb_DECODE_UNIT
         I_EN_o=1'b1;
         #10ns instr_o =32'h00837293;
 
+        #10ns instr_o=32'h40135293;
+
 
 
 

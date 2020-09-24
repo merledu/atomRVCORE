@@ -14,7 +14,9 @@ module CONTROL
 	 output logic JALRE_o,//JUMP AND LINK ENABLE SIGNAL FROM CONTROL UNIT FETCH
 	 output logic UJE_o,//UJ ENABLE SIGNAL FROM CONTROL UNIT TO FETCH
 	 output logic IWR_EN_o,//INSTRUCTION WRITE ENABLE SIGNAL TO WRITE ON INSTRUCTION MEM
-	 output logic [5:0] ALUop_o//ALU OPCODE SWITCH FOR OPERATION
+	 output logic [5:0] ALUop_o,//ALU OPCODE SWITCH FOR OPERATION
+     output logic IR_EN_o,
+     output logic regrst_o
 
      );
 
@@ -33,6 +35,8 @@ module CONTROL
 	    UJE_o=1'b0;
 	    IWR_EN_o=1'b0;
 	    ALUop_o=6'd0;
+        IR_EN_o=1'b1;
+        regrst_o=1'b0;
 
 
 
