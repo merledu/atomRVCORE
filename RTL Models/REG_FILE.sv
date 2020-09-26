@@ -8,7 +8,11 @@ module REG_FILE (
 	output logic [31:0] R1_o,
 	output logic [31:0] R2_o,
 	input logic [31:0] WR_i,
-	input logic RWR_EN_i
+	input logic RWR_EN_i,
+    input logic JALRE_i,
+    input logic [31:0] RGD_i,
+    input logic [31:0] lb_i,
+    input logic DR_EN_i
  );
 logic [31:0] R [0:31];
 integer i;
@@ -43,7 +47,12 @@ always @ (posedge clk_i)begin
 
             else
 
-                R[RD_i]<=WR_i;       
+               if (JALRE_i==1'b1)
+                R[RD_i]<=RGD_i;
+               else if (DR_EN_i==1'b1)
+                R[RD_i]<=lb_i;
+                else
+                 R[RD_i]<=WR_i;       
 
         end
 
