@@ -8,7 +8,7 @@ It's such a good experience to work on automated stuff.I  enjoy to work on somet
 
 ---
 ---
-![a](1.jpg)
+![a](images/1.jpg)
 
 #### Simulation snap of modelsim
 ---
@@ -17,54 +17,31 @@ It's such a good experience to work on automated stuff.I  enjoy to work on somet
 
 First of all get started by cloning this repository on your machine.  
 ```ruby
-https://github.com/merledu/Burq-Core.git 
+https://github.com/merledu/atomRVCORE.git 
 ```
-Create a .txt file and place the ***hexadecimal*** code of your instructions simulated on ***Venus*** (RISC-V Simulator)\
-Each instruction's hexadecimal code must be on seperate line as following. This program consists of 9 instructions.
-00400093
-00500193
-018004EF
-00402223
-00402283
-00521A63
-00120333
-00C0006F
-40308233
-00048067
+ *Create a instructions.mem file and place the ***hexadecimal*** code of your instructions simulated on ***Venus*** (RISC-V Simulator)
+Each instruction's hexadecimal code must be on seperate line as following.These given 15 instructions will generate **fibonacci series***
+01100F13
+01E02023
+00000693
+00000613
+00000593
+00100593
+00002783
+00060533
+00168693
+00B50633
+FED780E3
+0016F713
+FE0706E3
+000605B3
+FE9FF0EF
 ```
-Then perform the following step
-```ruby
-cd Burq/src/main/scala/riscv
+Then simply compile and run simulation by top.sv file uncheck [enable optimization] on modelsim
 ```
-Open **instruction.scala** with this command. You can also manually go into the above path and open the file in your favorite text editor.
-```ruby
-open instruction.scala
-```
-Find the following line
-``` python
-loadMemoryFromFile(mem, "/home/raheel/aaa.txt")
-```
-Change the .txt file path to match your file that you created above storing your own program instructions.\
-After setting up the InstructionMem.scala file, go inside the Burq folder.
-```ruby
-cd Burq
-```
-And enter
-```ruby
-sbt
-```
-When the terminal changes to this type
-```ruby
-sbt:Burq>
-```
-Enter this command
-```ruby
-sbt:Burq> test:runMain riscv.Launcher conn
-```
-After you get success
-```ruby
-sbt:Burq> test:runMain riscv.Launcher conn --backend-name verilator
-```
-After success you will get a folder ***test_run_dir*** on root of your folder. Go into the examples folder inside.\
-There you will find the folder named Top. Enter in it and you can find the conn.vcd file which you visualise on **gtkwave** to\
-see your program running.
+
+![instructionfile](images/2.jpg) 
+
+--- 
+
+![series](images/3.jpg)
