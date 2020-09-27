@@ -1,24 +1,70 @@
-### Hi there, I'm Rehan Ejaz 👋
+# **RISC-V Single Cycle atomRVCORE**
+## Designed by **Rehan Ejaz**
 
-
-## I'm a Design Engineer , and Student!
-
-- 🔭 I’m currently working as an intern at [MICRO ELECTRONICS RESEARCH LAB](https://www.merledupk.org)!
-- 🌱 I’m currently learning everything 🤣
-- 🥅 2020 Goals: Contribute more to Open Source projects
-- ⚡ interests: I love to work in automation and robotics
-
-### Connect with me:
-
-[<img align="left" alt="codeSTACKr.com" width="22px" src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/globe.svg" />](https://github.com/RehanEjaz)
-[<img align="left" alt="codeSTACKr | YouTube" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/youtube.svg" />](https://www.youtube.com/c/WorldExplorers)
-[<img align="left" alt="codeSTACKr | LinkedIn" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />](https://www.linkedin.com/in/rehan-ejaz-08484a1a9?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BpIPWLd2ySYWu5pv%2BZAdQQA%3D%3D)
-
-<br />
-
-
-
-<br />
-<br />
+*Hello,
+	I am a student of Electrical Engineering in Usman Institute of Technology (Affiliated with NED). I have totally understood riscv Datapath and implemented it on logisim,after that is learned SystemVerilog and implemented it on SystemVerilog.
+It is a great acheivement for me looking forward to contribute much more.
+It's such a good experience to work on automated stuff.I  enjoy to work on something creative.*
 
 ---
+---
+![atomRVCORE](https://drive.google.com/file/d/1gaIj7pL8lz4kSyHX_O8Gc-j56aFCjuyC/view?usp=sharing)
+
+#### Simulation snap of modelsim
+---
+---
+## How to Run
+
+First of all get started by cloning this repository on your machine.  
+```ruby
+https://github.com/merledu/Burq-Core.git 
+```
+Create a .txt file and place the ***hexadecimal*** code of your instructions simulated on ***Venus*** (RISC-V Simulator)\
+Each instruction's hexadecimal code must be on seperate line as following. This program consists of 9 instructions.
+00400093
+00500193
+018004EF
+00402223
+00402283
+00521A63
+00120333
+00C0006F
+40308233
+00048067
+```
+Then perform the following step
+```ruby
+cd Burq/src/main/scala/riscv
+```
+Open **instruction.scala** with this command. You can also manually go into the above path and open the file in your favorite text editor.
+```ruby
+open instruction.scala
+```
+Find the following line
+``` python
+loadMemoryFromFile(mem, "/home/raheel/aaa.txt")
+```
+Change the .txt file path to match your file that you created above storing your own program instructions.\
+After setting up the InstructionMem.scala file, go inside the Burq folder.
+```ruby
+cd Burq
+```
+And enter
+```ruby
+sbt
+```
+When the terminal changes to this type
+```ruby
+sbt:Burq>
+```
+Enter this command
+```ruby
+sbt:Burq> test:runMain riscv.Launcher conn
+```
+After you get success
+```ruby
+sbt:Burq> test:runMain riscv.Launcher conn --backend-name verilator
+```
+After success you will get a folder ***test_run_dir*** on root of your folder. Go into the examples folder inside.\
+There you will find the folder named Top. Enter in it and you can find the conn.vcd file which you visualise on **gtkwave** to\
+see your program running.
