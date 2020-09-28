@@ -33,17 +33,17 @@ module ALU (
 
             (ALUop_i == 6'b010_001)? operand_A:                            // operand_A = PC+4 for JAL
 
-            (ALUop_i == 6'b001_011)? {31'b0,operand_A == operand_B}:             // BEQ 
+            (ALUop_i == 6'b001_011)? {31'b0,$signed(operand_A) == $signed(operand_B)}:             // BEQ 
 
-            (ALUop_i == 6'b001_100)? {31'b0,operand_A != operand_B}:             // BNE
+            (ALUop_i == 6'b001_100)? {31'b0,$signed(operand_A) != $signed(operand_B)}:             // BNE
 
-            (ALUop_i == 6'b001_101)? {31'b0,operand_A < operand_B}:              // BLT
+            (ALUop_i == 6'b001_101)? {31'b0,$signed(operand_A) < $signed(operand_B)}:              // BLT
 
-            (ALUop_i == 6'b001_110)? {31'b0,operand_A >= operand_B}:             // BGE
+            (ALUop_i == 6'b001_110)? {31'b0,$signed(operand_A) >= $signed(operand_B)}:             // BGE
 
-            (ALUop_i == 6'b001_111)? {31'b0,operand_A < operand_B}:              // BLTU
+            (ALUop_i == 6'b001_111)? {31'b0,$unsigned(operand_A) < $unsigned(operand_B)}:              // BLTU
 
-            (ALUop_i == 6'b010_000)? {31'b0,operand_A >= operand_B}: 32'b0;          // BGEU 
+            (ALUop_i == 6'b010_000)? {31'b0,$unsigned(operand_A) >= $unsigned(operand_B)}: 32'b0;          // BGEU 
 
   
 
