@@ -44,6 +44,7 @@ module ALU (
             (ALUop_i == 6'b001_111)? {31'b0,$unsigned(operand_A) < $unsigned(operand_B)}:              // BLTU
 
             (ALUop_i == 6'b010_000)? {31'b0,$unsigned(operand_A) >= $unsigned(operand_B)}: 32'b0;          // BGEU 
+            
 
   
 
