@@ -1,14 +1,20 @@
-module ALU (
-	input logic [5:0] ALUop_i,//opcode to identify the instructions
-	input logic [31:0] operand_A,
-	input logic [31:0] operand_B,
-	output logic [31:0] result_o
-	);
-  timeunit 1ns; timeprecision 1ns;
-   logic [4:0] shamt;
+timeunit 1ns; timeprecision 1ns;
+module atomRVCORE_alu #(
+ parameter DATAWIDTH=32,
+ parameter OPCODE_WIDTH=6,
+ parameter MAX_SHIFT=5  
+	)
+    ( 
+	input logic [OPCODE_WIDTH-1:0] ALUop_i,//opcode to identify the instructions
+	input logic [DATAWIDTH-1:0] operand_A,
+	input logic [DATAWIDTH-1:0] operand_B,
+	output logic [DATAWIDTH-1:0] result_o
+	
+     );
+    logic [MAX_SHIFT-1:0] shamt;
 
-  always_comb begin 
-        assign shamt = operand_B[4:0];
+    always_comb begin 
+        assign shamt = operand_B[MAX_SHIFT-1:0];
         result_o = 
 
             (ALUop_i == 6'b000_001)? operand_A + operand_B:                //ADDI,ADDIW,ADD
@@ -51,5 +57,4 @@ module ALU (
 
      end
 
-
-endmodule :ALU
+endmodule : atomRVCORE_alu

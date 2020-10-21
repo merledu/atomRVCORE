@@ -1,6 +1,9 @@
-module CONTROL 
-	(
-	 input logic [6:0] opcode_i,
+timeunit 1ns; timeprecision 1ns;
+module atomRVCORE_control_unit #(
+  parameter DATAWIDTH=32,
+  parameter OPCODE_WIDTH=6
+	)
+    (input logic [6:0] opcode_i,
 	 input logic [2:0] func3_i,
 	 input logic [6:0] func7_i,
 	 output logic I_EN_o,//I TYPE INSTRUCTION ENABLE FROM CONTROL
@@ -14,18 +17,18 @@ module CONTROL
 	 output logic JALRE_o,//JUMP AND LINK ENABLE SIGNAL FROM CONTROL UNIT FETCH
 	 output logic UJE_o,//UJ ENABLE SIGNAL FROM CONTROL UNIT TO FETCH
 	 output logic IWR_EN_o,//INSTRUCTION WRITE ENABLE SIGNAL TO WRITE ON INSTRUCTION MEM
-	 output logic [5:0] ALUop_o,//ALU OPCODE SWITCH FOR OPERATION
+	 output logic [OPCODE_WIDTH-1:0] ALUop_o,//ALU OPCODE SWITCH FOR OPERATION
      output logic IR_EN_o,
      output logic regrst_o,
      output logic PCrst_o,
      output logic DR_EN_o,
      output logic DWR_EN_o,
-     input logic [31:0] result_i,
+     input logic [DATAWIDTH-1:0] result_i,
      input logic LUI_EN_o
-
+	
      );
 
-	always_comb begin 
+    always_comb begin 
         
 	
 	    IWR_EN_o=1'b0;
@@ -125,6 +128,4 @@ module CONTROL
                       ( (opcode_i == 7'h73) && (func3_i == 3'h0 ) && (func7_i == 7'h0 ) ) ?  6'd0 :
                       ( (opcode_i == 7'h73) && (func3_i == 3'h0 ) && (func7_i == 7'h1 ) ) ?  6'd0 :6'd0;
 
-                       
-
- endmodule : CONTROL
+endmodule

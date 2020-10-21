@@ -1,22 +1,26 @@
 timeunit 1ns; timeprecision 1ns;
-module FETCH_UNIT 
-    (
-	 input clk_i,    // Clock INPUT FROM TOP
-	 output logic [31:0] PC_instr_o,//Program Counter Register 32 bit
+module atomRVCORE_ifu #(
+  parameter DATAWIDTH=32 
+	)
+    
+   (
+
+     input clk_i,    // Clock INPUT FROM TOP
+	 output logic [DATAWIDTH-1:0] PC_instr_o,//Program Counter Register 32 bit
 	 input logic BE_i,//BRANCH ENABLE SIGNAL FROM CONTROL
 	 input logic JALRE_i,//JUMP AND LINK ENABLE SIGNAL FROM CONTROL UNIT
 	 input logic UJE_i,//UJ ENABLE SIGNAL FROM CONTROL UNIT
-	 output logic [31:0] RGD_o,//OUTPUT TO REG_FILE TO WRITE ON DESTINATION
-	 input logic [31:0] R1_i,//INPUT FROM REG_FILE TO ADD WITH IMMEDIATE IN JALR INSTRUCTION
-     input logic [31:0] immed_i,
+	 output logic [DATAWIDTH-1:0] RGD_o,//OUTPUT TO REG_FILE TO WRITE ON DESTINATION
+	 input logic [DATAWIDTH-1:0] R1_i,//INPUT FROM REG_FILE TO ADD WITH IMMEDIATE IN JALR INSTRUCTION
+     input logic [DATAWIDTH-1:0] immed_i,
      input logic PCrst_i,
      input logic U_EN_i,
-     input logic LUI_EN_i
-    );
+     input logic LUI_EN_i 
+     );
 
-     logic [31:0] JAL_pc;
-     logic [31:0] JALRE_pc;
-     logic [31:0] PC;
+     logic [DATAWIDTH-1:0] JAL_pc;
+     logic [DATAWIDTH-1:0] JALRE_pc;
+     logic [DATAWIDTH-1:0] PC;
 
     initial begin
 
@@ -55,6 +59,5 @@ module FETCH_UNIT
       assign RGD_o = ((UJE_i==1'b1))? PC + 32'd4:
                      ((U_EN_i==1'b1))? PC + {immed_i[19:0],12'd0}:
                      ((LUI_EN_i==1'b1))? 32'd0 + {immed_i[19:0],12'd0}:0;
-     
 
- endmodule : FETCH_UNIT
+endmodule

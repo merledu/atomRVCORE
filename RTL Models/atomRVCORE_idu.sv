@@ -1,30 +1,33 @@
 timeunit 1ns; timeprecision 1ns;
-module DECODE_UNIT (
-	
-    
-	input logic [31:0] instr_i,//32 BIT INSTRUCTION FROM INSTRUCTION MEM
+module atomRVCORE_idu #(
+ parameter DATAWIDTH=32,
+ parameter REG_ADRESS_WIDTH=5
+	)
+	(
+	input logic [DATAWIDTH-1:0] instr_i,//32 BIT INSTRUCTION FROM INSTRUCTION MEM
 	input logic I_EN_i,//I TYPE INSTRUCTION ENABLE FROM CONTROL
 	input logic R_EN_i,//R TYPE INSTRUCTION ENABLE FROM CONTROL
 	input logic S_EN_i,//S TYPE INSTRUCTION ENABLE FROM CONTROL
 	input logic SB_EN_i,//SB TYPE INSTRUCTION ENABLE FROM CONTROL
 	input logic U_EN_i,//U TYPE INSTRUCTION ENABLE FROM CONTROL
 	input logic UJ_EN_i,//UJ TYPE INSTRUCTION ENABLE FROM CONTROL
-	output logic [4:0] RS1_o,
-	output logic [4:0] RS2_o,
-	output logic [4:0] RD_o,
+	output logic [REG_ADRESS_WIDTH-1:0] RS1_o,
+	output logic [REG_ADRESS_WIDTH-1:0] RS2_o,
+	output logic [REG_ADRESS_WIDTH-1:0] RD_o,
 	output logic [6:0] opcode_o,
 	output logic [2:0] func3_o,
 	output logic [6:0] func7_o,
-	output logic [31:0] immed_o,
-    output logic [31:0] address_o,
+	output logic [DATAWIDTH-1:0] immed_o,
+    output logic [DATAWIDTH-1:0] address_o,
     input logic DR_EN_i,
-    input logic [31:0] R2_i,
-    output logic [31:0] operand_B_o,
+    input logic [DATAWIDTH-1:0] R2_i,
+    output logic [DATAWIDTH-1:0] operand_B_o,
     input logic DWR_EN_i,
-    input logic [31:0] R1_i
-    );
-    
-    always_comb begin 
+    input logic [DATAWIDTH-1:0] R1_i
+	
+     );
+
+	always_comb begin 
      opcode_o= instr_i[6:0] ;
      func7_o=7'd0;
       
@@ -90,4 +93,4 @@ module DECODE_UNIT (
 
      end
 
- endmodule
+endmodule : atomRVCORE_idu

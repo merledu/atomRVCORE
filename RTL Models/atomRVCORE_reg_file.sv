@@ -1,27 +1,36 @@
 timeunit 1ns; timeprecision 1ns;
-module REG_FILE (
-	input clk_i,    // Clock
+module atomRVCORE_reg_file #(
+
+ parameter DATAWIDTH=32,
+ parameter REGISTERS=32,
+ parameter REG_ADRESS_WIDTH=5
+	)
+    ( 
+    input clk_i,    // Clock
 	input regrst_i,  // Asynchronous reset active HIGH
-	input logic [4:0] RS1_i,
-	input logic [4:0] RS2_i,
-	input logic [4:0] RD_i,
-	output logic [31:0] R1_o,
-	output logic [31:0] R2_o,
-	input logic [31:0] WR_i,
+	input logic [REG_ADRESS_WIDTH-1:0] RS1_i,
+	input logic [REG_ADRESS_WIDTH-1:0] RS2_i,
+	input logic [REG_ADRESS_WIDTH-1:0] RD_i,
+	output logic [DATAWIDTH-1:0] R1_o,
+	output logic [DATAWIDTH-1:0] R2_o,
+	input logic [DATAWIDTH-1:0] WR_i,
 	input logic RWR_EN_i,
     input logic JALRE_i,
-    input logic [31:0] RGD_i,
-    input logic [31:0] lb_i,
+    input logic [DATAWIDTH-1:0] RGD_i,
+    input logic [DATAWIDTH-1:0] lb_i,
     input logic DR_EN_i,
     input logic U_EN_i,
     input logic LUI_EN_i
- );
-logic [31:0] R [0:31];
+
+	
+     );
+
+    logic [DATAWIDTH-1:0] R [0:REGISTERS-1];
 integer i;
 
 initial begin
 
-    for (i=0;i<32;i++)begin
+    for (i=0;i<REGISTERS;i++)begin
 
      R[i] = 0;
 
@@ -29,13 +38,11 @@ initial begin
 
 end
 
-
-
 always @ (posedge clk_i)begin
 
     if (regrst_i==1'b1) begin
 
-        for (i=0;i<32;i++)
+        for (i=0;i<REGISTERS;i++)
 
             R[i]<=0;
 
@@ -45,7 +52,7 @@ always @ (posedge clk_i)begin
 
             if (RD_i==5'd0)
 
-                R[0]<=32'h00000000;
+                R[0]<=32'd0;
 
             else
 
@@ -60,12 +67,9 @@ always @ (posedge clk_i)begin
 
 end
 
-
-
 assign R1_o = R[RS1_i];
 
 assign R2_o = R[RS2_i];
 
 
-
- endmodule : REG_FILE
+ endmodule :atomRVCORE_reg_file
