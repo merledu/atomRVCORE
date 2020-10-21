@@ -9,10 +9,13 @@ module FETCH_UNIT
 	 output logic [31:0] RGD_o,//OUTPUT TO REG_FILE TO WRITE ON DESTINATION
 	 input logic [31:0] R1_i,//INPUT FROM REG_FILE TO ADD WITH IMMEDIATE IN JALR INSTRUCTION
      input logic [31:0] immed_i,
-     input logic PCrst_i
+     input logic PCrst_i,
+     input logic U_EN_i,
+     input logic LUI_EN_i
     );
 
      logic [31:0] JAL_pc;
+     logic [31:0] JALRE_pc;
      logic [31:0] PC;
 
     initial begin
@@ -39,16 +42,19 @@ module FETCH_UNIT
     		PC <= JAL_pc;
     	 end
     	else if (JALRE_i==1'b1) begin // if Jump and link enable then PC = R[rs1] + immediate ,R[rd] = PC + 4
-    		PC <= R1_i + immed_i;
+    		PC <= JALRE_pc;
     	 end
 
 
      end
-
+     assign JALRE_pc=R1_i+immed_i;
      assign PC_instr_o = PC;
 
-     assign JAL_pc=PC+{immed_i[29:0],1'd0};
+     assign JAL_pc=PC+{immed_i[30:0],1'd0};
 
-     assign RGD_o = PC + 32'd4;
+      assign RGD_o = ((UJE_i==1'b1))? PC + 32'd4:
+                     ((U_EN_i==1'b1))? PC + {immed_i[19:0],12'd0}:
+                     ((LUI_EN_i==1'b1))? 32'd0 + {immed_i[19:0],12'd0}:0;
+     
 
  endmodule : FETCH_UNIT

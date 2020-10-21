@@ -20,7 +20,8 @@ module CONTROL
      output logic PCrst_o,
      output logic DR_EN_o,
      output logic DWR_EN_o,
-     input logic [31:0] result_i
+     input logic [31:0] result_i,
+     input logic LUI_EN_o
 
      );
 
@@ -69,7 +70,9 @@ module CONTROL
 
     assign SB_EN_o  =   ((opcode_i == 7'b1100011))?  1'b1 : 1'b0;
 
-    assign U_EN_o   =   ((opcode_i == 7'b0010111) | (opcode_i == 7'b0110111) )?  1'b1 : 1'b0;
+    assign U_EN_o   =   ((opcode_i == 7'b0110111))?  1'b1 : 1'b0;
+
+    assign LUI_EN_o   =   ((opcode_i == 7'b0010111))?  1'b1 : 1'b0;
 
     assign UJ_EN_o  =   ((opcode_i == 7'b1101111))?  1'b1 : 1'b0;
     
