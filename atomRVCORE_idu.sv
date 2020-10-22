@@ -30,10 +30,9 @@ module atomRVCORE_idu #(
      input logic [DATAWIDTH-1:0] result_i,//ALU result input from alu to decide branch enable
      input logic [DATAWIDTH-1:0] RGD_i,
      output logic [REG_ADRESS_WIDTH-1:0] RD_o,
-     output logic [DATAWIDTH-1:0] WR_o,
      output logic [DATAWIDTH-1:0] R2_o,
      output logic RWR_EN_o,
-     input logic [DATAWIDTH-1:0] WR_i,
+     //input logic [DATAWIDTH-1:0] WR_i,
      output logic LUI_EN_o,
      input logic RWR_EN_i,
      input logic RWR_EN_if,
@@ -209,7 +208,7 @@ assign operand_A =R1;
      DWR_EN_o<=DWR_EN;
      RWR_EN_o<=RWR_EN;
      RD_o<=RD;
-     WR_o<=WR_i;
+     //WR_o<=WR_i;
      R2_o<=R2;
      end
 

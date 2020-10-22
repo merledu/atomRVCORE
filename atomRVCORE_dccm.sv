@@ -13,10 +13,10 @@ module atomRVCORE_dccm #(
     input logic [DATAWIDTH-1:0] DT_i,
     input logic RWR_EN_i,
     input logic [REG_ADRESS_WIDTH-1:0] RD_i,
-    input logic [DATAWIDTH-1:0] WR_i,
+    //input logic [DATAWIDTH-1:0] WR_i,
     output logic RWR_EN_o,
-    output logic [REG_ADRESS_WIDTH-1:0] RD_o,
-    output logic [DATAWIDTH-1:0] WR_o
+    output logic [REG_ADRESS_WIDTH-1:0] RD_o
+    //output logic [DATAWIDTH-1:0] WR_o
 
 );
 
@@ -50,7 +50,7 @@ module atomRVCORE_dccm #(
 
         RWR_EN_o<=EN;
         RD_o<=RD_i;
-        WR_o<=WR_i;
+      //  WR_o<=WR_i;
 
 
 
