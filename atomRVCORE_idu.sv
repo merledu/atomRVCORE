@@ -6,9 +6,9 @@ module atomRVCORE_idu #(
  parameter REGISTERS=32
 	)
 	(
-	input clk_i,
-    input logic [DATAWIDTH-1:0] instr_i,//32 BIT INSTRUCTION FROM FETCH UNIT
-	 output logic [DATAWIDTH-1:0] immed_o,//32bit sign extended immedite output from decode and input to fetch unit
+	   input clk_i,
+     input logic [DATAWIDTH-1:0] instr_i,//32 BIT INSTRUCTION FROM FETCH UNIT
+	   output logic [DATAWIDTH-1:0] immed_o,//32bit sign extended immedite output from decode and input to fetch unit
      output logic [DATAWIDTH-1:0] address_o,//32 output from decode input to data memory
      output logic [DATAWIDTH-1:0] operand_B_o,//32 bit operand to ALU either immediate or R2
      output logic I_EN_o,//I TYPE INSTRUCTION ENABLE
@@ -29,9 +29,18 @@ module atomRVCORE_idu #(
      output logic [DATAWIDTH-1:0] operand_A_o,//
      input logic [DATAWIDTH-1:0] result_i,//ALU result input from alu to decide branch enable
      input logic [DATAWIDTH-1:0] RGD_i,
-     input logic [DATAWIDTH-1:0] WR_i_t,
-     output logic LUI_EN_o
+     output logic [REG_ADRESS_WIDTH-1:0] RD_o,
+     output logic [DATAWIDTH-1:0] WR_o,
+     output logic [DATAWIDTH-1:0] R2_o,
+     output logic RWR_EN_o,
+     input logic [DATAWIDTH-1:0] WR_i,
+     output logic LUI_EN_o,
+     input logic RWR_EN_i,
+     input logic RWR_EN_if,
+     input logic [REG_ADRESS_WIDTH-1:0] RD_if,
+     input logic [DATAWIDTH-1:0] WR_if
      );
+  
     logic I_EN;
     logic R_EN;
     logic lb;
@@ -63,9 +72,6 @@ module atomRVCORE_idu #(
     logic [DATAWIDTH-1:0] address;
     logic [DATAWIDTH-1:0] operand_B;
     logic [DATAWIDTH-1:0] operand_A;
-    logic [REG_ADRESS_WIDTH-1:0] RD_t;
-    logic [DATAWIDTH-1:0] WR_i;
-    logic RWR_EN_t;
 
     logic [DATAWIDTH-1:0] R [0:REGISTERS-1];
 integer i;
@@ -90,20 +96,20 @@ always @ (posedge clk_i)begin
 
         end
 
-    else if (regrst==1'b0 && RWR_EN==1'b1)begin
+    else if (regrst==1'b0 && RWR_EN_if==1'b1)begin
 
-            if (RD_t==5'd0)
+            if (RD_if==5'd0)
 
                 R[0]<=32'd0;
 
             else
 
                if (JALRE==1'b1 || U_EN==1'b1 || LUI_EN == 1'b1)
-                R[RD_t]<=RGD_i;
+                R[RD_if]<=RGD_i;
                else if (DR_EN==1'b1)
-                R[RD_t]<=lb;
+                R[RD_if]<=lb;
                 else
-                 R[RD_t]<=WR_i_t;       
+                 R[RD_if]<=WR_if;       
 
         end
 
@@ -123,14 +129,14 @@ assign operand_A =R1;
 
 
         if (R_EN==1'b1 && I_EN !=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN != 1'b1) begin
-     	 RD_t   = instr_i[11:7];
+     	 RD   = instr_i[11:7];
      	 func3 = instr_i[14:12];
      	 RS1   = instr_i[19:15];
      	 RS2   = instr_i[24:20];
      	 func7 =instr_i[31:25];
          end
         else if (I_EN==1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN != 1'b1) begin
-     	 RD_t    = instr_i[11:7];
+     	 RD    = instr_i[11:7];
      	 func3 = instr_i[14:12];
      	 RS1   = instr_i[19:15];
      	 func7 =instr_i[31:25];
@@ -150,12 +156,12 @@ assign operand_A =R1;
 
          end
         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN==1'b1 && UJ_EN != 1'b1) begin
-     	 RD_t  = instr_i[11:7];
+     	 RD  = instr_i[11:7];
      	 immed={{12{instr_i[31]}},instr_i[31:12]};
      	 
      	 end
         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN == 1'b1) begin
-         RD_t   = instr_i[11:7];
+         RD   = instr_i[11:7];
          immed = {{12{instr_i[31]}},instr_i[31],instr_i[19:12],instr_i[20],instr_i[30:21]};
          
          end
@@ -165,7 +171,7 @@ assign operand_A =R1;
          end
         else begin
     
-         RD_t    = 5'd0;
+         RD    = 5'd0;
          func3 = 3'd0;
          RS1   = 5'd0;
          RS2   = 5'd0;
@@ -201,9 +207,10 @@ assign operand_A =R1;
      PCrst_o<=PCrst;
      DR_EN_o<=DR_EN;
      DWR_EN_o<=DWR_EN;
-     RWR_EN<=RWR_EN_t;
-     RD<=RD_t;
-     WR_i<=WR_i_t;
+     RWR_EN_o<=RWR_EN;
+     RD_o<=RD;
+     WR_o<=WR_i;
+     R2_o<=R2;
      end
 
     always_comb begin 
@@ -231,7 +238,7 @@ assign operand_A =R1;
 
 
 
-    assign RWR_EN_t = ((opcode == R_TYPE) | (opcode == I_TYPE) | (opcode == LOAD)
+    assign RWR_EN = ((opcode == R_TYPE) | (opcode == I_TYPE) | (opcode == LOAD)
 
                    | (opcode == JALR) | (opcode == JAL) )? 1'b1 : 1'b0; 
 
