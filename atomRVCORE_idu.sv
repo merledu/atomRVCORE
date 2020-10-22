@@ -29,7 +29,7 @@ module atomRVCORE_idu #(
      output logic [DATAWIDTH-1:0] operand_A_o,//
      input logic [DATAWIDTH-1:0] result_i,//ALU result input from alu to decide branch enable
      input logic [DATAWIDTH-1:0] RGD_i,
-     input logic [DATAWIDTH-1:0] WR_i,
+     input logic [DATAWIDTH-1:0] WR_i_t,
      output logic LUI_EN_o
      );
     logic I_EN;
@@ -63,6 +63,9 @@ module atomRVCORE_idu #(
     logic [DATAWIDTH-1:0] address;
     logic [DATAWIDTH-1:0] operand_B;
     logic [DATAWIDTH-1:0] operand_A;
+    logic [REG_ADRESS_WIDTH-1:0] RD_t;
+    logic [DATAWIDTH-1:0] WR_i;
+    logic RWR_EN_t;
 
     logic [DATAWIDTH-1:0] R [0:REGISTERS-1];
 integer i;
@@ -96,11 +99,11 @@ always @ (posedge clk_i)begin
             else
 
                if (JALRE==1'b1 || U_EN==1'b1 || LUI_EN == 1'b1)
-                R[RD]<=RGD_i;
+                R[RD_t]<=RGD_i;
                else if (DR_EN==1'b1)
-                R[RD]<=lb;
+                R[RD_t]<=lb;
                 else
-                 R[RD]<=WR_i_t;       
+                 R[RD_t]<=WR_i_t;       
 
         end
 
@@ -120,14 +123,14 @@ assign operand_A =R1;
 
 
         if (R_EN==1'b1 && I_EN !=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN != 1'b1) begin
-     	 RD   = instr_i[11:7];
+     	 RD_t   = instr_i[11:7];
      	 func3 = instr_i[14:12];
      	 RS1   = instr_i[19:15];
      	 RS2   = instr_i[24:20];
      	 func7 =instr_i[31:25];
          end
         else if (I_EN==1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN != 1'b1) begin
-     	 RD    = instr_i[11:7];
+     	 RD_t    = instr_i[11:7];
      	 func3 = instr_i[14:12];
      	 RS1   = instr_i[19:15];
      	 func7 =instr_i[31:25];
@@ -147,12 +150,12 @@ assign operand_A =R1;
 
          end
         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN==1'b1 && UJ_EN != 1'b1) begin
-     	 RD  = instr_i[11:7];
+     	 RD_t  = instr_i[11:7];
      	 immed={{12{instr_i[31]}},instr_i[31:12]};
      	 
      	 end
         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN == 1'b1) begin
-         RD   = instr_i[11:7];
+         RD_t   = instr_i[11:7];
          immed = {{12{instr_i[31]}},instr_i[31],instr_i[19:12],instr_i[20],instr_i[30:21]};
          
          end
@@ -162,7 +165,7 @@ assign operand_A =R1;
          end
         else begin
     
-         RD    = 5'd0;
+         RD_t    = 5'd0;
          func3 = 3'd0;
          RS1   = 5'd0;
          RS2   = 5'd0;
