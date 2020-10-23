@@ -26,7 +26,7 @@ module atomRVCORE_ifu #(
 
      logic [DATAWIDTH-1:0] RGD;
      logic [DATAWIDTH-1:0] PC_instr;
-     
+     localparam OP_JAL=7'b1100111;
 
     initial begin
 
@@ -57,6 +57,7 @@ module atomRVCORE_ifu #(
     assign PC_instr = PC;
 
     assign JAL_pc=PC+{immed_i[30:0],1'd0};
+   
 
     assign RGD = ((UJE_i==1'b1))? PC + 32'd4:
                    ((U_EN_i==1'b1))? PC + {immed_i[19:0],12'd0}:
