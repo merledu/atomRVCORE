@@ -31,7 +31,7 @@ module atomRVCORE_iccm #(
 
      end
    
-    always @(*) begin
+    always @(posedge clk_i) begin
 
      if(IR_EN_i==1'b1)
      DATA_o = mem[address_i[ADRESS_BUS+1:2]];

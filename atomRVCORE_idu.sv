@@ -122,9 +122,8 @@ assign operand_A =R1;
 
 	always_comb begin 
      opcode= instr_i[6:0] ;
-     func7=7'd0;
       
-        address=32'd0;
+       // address=32'd0;
 
 
         if (R_EN==1'b1 && I_EN !=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN != 1'b1) begin
@@ -146,27 +145,26 @@ assign operand_A =R1;
      	 RS1   = instr_i[19:15];
      	 RS2   = instr_i[24:20];
      	 immed={{20{instr_i[31]}},instr_i[31:25],instr_i[11:7]};
+       func7=7'd0;
          end
         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN == 1'b1 && U_EN!=1'b1 && UJ_EN != 1'b1) begin
      	 func3 = instr_i[14:12];
      	 RS1   = instr_i[19:15];
      	 RS2   = instr_i[24:20];
      	 immed = {{20{instr_i[31]}},instr_i[31],instr_i[7],instr_i[30:25],instr_i[11:8]};
+       func7=7'd0;
 
          end
         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN==1'b1 && UJ_EN != 1'b1) begin
      	 RD  = instr_i[11:7];
      	 immed={{12{instr_i[31]}},instr_i[31:12]};
+       func7=7'd0;
      	 
      	 end
         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN == 1'b1) begin
          RD   = instr_i[11:7];
          immed = {{12{instr_i[31]}},instr_i[31],instr_i[19:12],instr_i[20],instr_i[30:21]};
-         
-         end
-
-         else if (I_EN!=1'b1 && R_EN!=1'b1 && S_EN!=1'b1 && SB_EN != 1'b1 && U_EN!=1'b1 && UJ_EN != 1'b1 ) begin
-             
+         func7=7'd0;
          end
         else begin
     
@@ -179,7 +177,7 @@ assign operand_A =R1;
 
         if (DR_EN==1'b1 || DWR_EN)
         address=immed+R1;
-        if (SB_EN == 1'b1 || R_EN == 1'b1)
+        if (SB_EN == 1'b1 || R_EN == 1'b1 || S_EN == 1'b1 )
             operand_B= R2;
         else
          operand_B =  immed;

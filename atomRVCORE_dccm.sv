@@ -39,7 +39,7 @@ module atomRVCORE_dccm #(
      
      end
    
-    always @(*) begin
+    always @(posedge clk_i) begin
 
      if(DR_EN_i==1'b1)
      DT_o = Dmem[{address_i[DATAWIDTH-3:2],2'd0}];
