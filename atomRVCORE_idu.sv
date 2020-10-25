@@ -7,14 +7,15 @@ module atomRVCORE_idu #(
 	)
 	(
 	   input clk_i,
+     input logic [DATAWIDTH-1:0] result_i,//ALU result input from alu to decide branch enable
      input logic [DATAWIDTH-1:0] instr_i,//32 BIT INSTRUCTION FROM FETCH UNIT
+     input logic RWR_EN_if,
+     input logic [REG_ADRESS_WIDTH-1:0] RD_if,
+     input logic [DATAWIDTH-1:0] WR_if,
+     input logic [DATAWIDTH-1:0] PC_i,
 	   output logic [DATAWIDTH-1:0] immed_o,//32bit sign extended immedite output from decode and input to fetch unit
      output logic [DATAWIDTH-1:0] address_o,//32 output from decode input to data memory
      output logic [DATAWIDTH-1:0] operand_B_o,//32 bit operand to ALU either immediate or R2
-     output logic I_EN_o,//I TYPE INSTRUCTION ENABLE
-     output logic R_EN_o,
-     output logic S_EN_o,//S TYPE INSTRUCTION ENABLE
-     output logic SB_EN_o,//SB TYPE INSTRUCTION ENABLE 
      output logic U_EN_o,//U TYPE INSTRUCTION ENABLE
      output logic UJ_EN_o,//UJ TYPE INSTRUCTION ENABLE
      output logic BE_o,//BRANCH ENABLE SIGNAL FROM decode to fetch unit
@@ -27,35 +28,25 @@ module atomRVCORE_idu #(
      output logic DR_EN_o,//Data read enable signal to DATA memory
      output logic DWR_EN_o,//Data write enable signal to data memory
      output logic [DATAWIDTH-1:0] operand_A_o,//
-     input logic [DATAWIDTH-1:0] result_i,//ALU result input from alu to decide branch enable
-     input logic [DATAWIDTH-1:0] RGD_i,
      output logic [REG_ADRESS_WIDTH-1:0] RD_o,
      output logic [DATAWIDTH-1:0] R2_o,
      output logic RWR_EN_o,
-     //input logic [DATAWIDTH-1:0] WR_i,
-     output logic LUI_EN_o,
-     input logic RWR_EN_i,
-     input logic RWR_EN_if,
-     input logic [REG_ADRESS_WIDTH-1:0] RD_if,
-     input logic [DATAWIDTH-1:0] WR_if
+     output logic [DATAWIDTH-1:0] PC_o,
+     output logic LUI_EN_o
      );
   
     logic I_EN;
     logic R_EN;
-    logic lb;
     logic S_EN;
     logic SB_EN;
     logic U_EN;
     logic UJ_EN;
-    logic RWR_EN;//
+    logic RWR_EN;
     logic BE;
     logic JALRE;
     logic UJE;
-    logic IWR_EN;
     logic ALUop;
-    logic IR_EN;
-    logic regrst;//
-    logic PCrst;
+    logic regrst;
     logic DR_EN;
     logic DWR_EN;
     logic LUI_EN;
@@ -102,12 +93,6 @@ always @ (posedge clk_i)begin
                 R[0]<=32'd0;
 
             else
-
-               if (JALRE==1'b1 || U_EN==1'b1 || LUI_EN == 1'b1)
-                R[RD_if]<=RGD_i;
-               else if (DR_EN==1'b1)
-                R[RD_if]<=lb;
-                else
                  R[RD_if]<=WR_if;       
 
         end
@@ -185,38 +170,32 @@ assign operand_A =R1;
      end
 
     always_ff @(posedge clk_i) begin   //CREATING STAGE FOR DECODE WITH CLOCK EDGE
+     PC_o<=PC_i;
      immed_o<=immed;
      address_o<=address;
      operand_B_o<=operand_B;
      operand_A_o<=operand_A;
      ALUop_o<=ALUop;
-     I_EN_o<=I_EN;
-     R_EN_o<=R_EN;
-     S_EN_o<=S_EN;
-     SB_EN_o <=SB_EN;
      U_EN_o<=U_EN;
      UJ_EN_o<=UJ_EN;
      BE_o<=BE;
      JALRE_o<=JALRE;
      UJE_o<=UJE;
-     IWR_EN_o<=IWR_EN;
-     IR_EN_o<=IR_EN;
-     PCrst_o<=PCrst;
      DR_EN_o<=DR_EN;
      DWR_EN_o<=DWR_EN;
      RWR_EN_o<=RWR_EN;
      RD_o<=RD;
-     //WR_o<=WR_i;
+     LUI_EN_o<=LUI_EN;
      R2_o<=R2;
-     end
+        end
 
     always_comb begin 
         
     
-        IWR_EN=1'b0;
-        IR_EN=1'b1;
+        IWR_EN_o=1'b0;
+        IR_EN_o=1'b1;
         regrst=1'b0;
-        PCrst=1'b1;
+        PCrst_o=1'b1;
         
      end
     localparam    R_TYPE  = 7'b0110011, 

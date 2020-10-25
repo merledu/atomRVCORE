@@ -7,20 +7,19 @@ module atomRVCORE_dccm #(
 	(
 	input clk_i,    // Clock
 	input logic [DATAWIDTH-1:0] address_i,
-	output logic [DATAWIDTH-1:0] DT_o,//
 	input logic DWR_EN_i,
 	input logic DR_EN_i,
     input logic [DATAWIDTH-1:0] DT_i,
-    input logic RWR_EN_i,
     input logic [REG_ADRESS_WIDTH-1:0] RD_i,
-    //input logic [DATAWIDTH-1:0] WR_i,
+    input logic RWR_EN_i,
+    input logic [DATAWIDTH-1:0] result_i,
     output logic RWR_EN_o,
-    output logic [REG_ADRESS_WIDTH-1:0] RD_o
-    //output logic [DATAWIDTH-1:0] WR_o
+    output logic [DATAWIDTH-1:0] DT_o,//
+    output logic [REG_ADRESS_WIDTH-1:0] RD_o,
+    output logic [DATAWIDTH-1:0] WR_o
 
 );
 
-    logic EN;
 	localparam NENTRIES=2**ADDRESS_BUS;
 	logic [DATAWIDTH-1:0] Dmem [0:NENTRIES-1];
 
@@ -32,12 +31,6 @@ module atomRVCORE_dccm #(
 
 
      end	
-
-     always_comb begin 
-        if(RWR_EN_i==1'b1)
-            EN=1'b1;
-     
-     end
    
     always @(posedge clk_i) begin
 
@@ -48,9 +41,9 @@ module atomRVCORE_dccm #(
 
      always_ff @(posedge clk_i) begin
 
-        RWR_EN_o<=EN;
+        RWR_EN_o<=RWR_EN_i;
         RD_o<=RD_i;
-      //  WR_o<=WR_i;
+        WR_o<=result_i;
 
 
 
