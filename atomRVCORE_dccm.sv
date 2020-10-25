@@ -14,7 +14,7 @@ module atomRVCORE_dccm #(
     input logic RWR_EN_i,
     input logic [DATAWIDTH-1:0] result_i,
     output logic RWR_EN_o,
-    output logic [DATAWIDTH-1:0] DT_o,//
+    
     output logic [REG_ADRESS_WIDTH-1:0] RD_o,
     output logic [DATAWIDTH-1:0] WR_o
 
@@ -22,6 +22,8 @@ module atomRVCORE_dccm #(
 
 	localparam NENTRIES=2**ADDRESS_BUS;
 	logic [DATAWIDTH-1:0] Dmem [0:NENTRIES-1];
+    logic [DATAWIDTH-1:0] DT_o;
+    logic [DATAWIDTH-1:0] WR;
 
     always @(posedge clk_i) begin
 
@@ -30,22 +32,27 @@ module atomRVCORE_dccm #(
          end
 
 
-     end	
+     end
    
     always @(posedge clk_i) begin
 
      if(DR_EN_i==1'b1)
      DT_o = Dmem[{address_i[DATAWIDTH-3:2],2'd0}];
         
-     end 
+     end
+
+     always_comb begin 
+      if (DR_EN_i==1'b1)
+        WR=DT_o;
+    else
+        WR=result_i;
+      end 
 
      always_ff @(posedge clk_i) begin
 
         RWR_EN_o<=RWR_EN_i;
         RD_o<=RD_i;
-        WR_o<=result_i;
-
-
+        WR_o<=WR;
 
  
      end

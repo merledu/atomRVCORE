@@ -30,7 +30,8 @@ module atomRVCORE_alu #(
      output logic [DATAWIDTH-1:0] PC_o,
      output logic [REG_ADRESS_WIDTH-1:0] RD_o,
      output logic RWR_EN_o,
-     output logic [DATAWIDTH-1:0] R2_o 
+     output logic [DATAWIDTH-1:0] R2_o,
+     output logic BE_o 
 	
      );
 
@@ -122,6 +123,7 @@ module atomRVCORE_alu #(
     DWR_EN_o<=DWR_EN_i;
     R2_o<=R2_i;
     PC_o<=PC;
+    BE_o<=BE;
 
     end
 
