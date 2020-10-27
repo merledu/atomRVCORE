@@ -33,11 +33,14 @@ module atomRVCORE_top #(
 	logic RWR_EN_tbf;
 	logic [REG_ADRESS_WIDTH-1:0] RD_tbf;
 	logic [DATAWIDTH-1:0] PC_tf;
+  logic [DATAWIDTH-1:0] DATAi_tb;
 	logic [DATAWIDTH-1:0] PC_tff;
 	logic BE_tbf;
 	logic [REG_ADRESS_WIDTH-1:0] RD_tbff;
 	logic [DATAWIDTH-1:0] address_tbf;
 	logic [DATAWIDTH-1:0] REG2_tbf;
+  logic [DATAWIDTH-1:0] DT_tb;
+  logic DR_EN_tbff;
 	
   atomRVCORE_ifu fetchUnit( 
   	.clk_i(clk_o), //
@@ -77,13 +80,14 @@ module atomRVCORE_top #(
 	.immed_o(immed_tb), 
 	.operand_B_o(operand_B_tb),
 	.LUI_EN_o(LUI_EN_tb), 
-	.PCrst_o(PCrst_tb) , 
-	.result_i(result_tb) ,// 
-	.BE_o(BE_tb), //
+	.PCrst_o(PCrst_tb) ,// 
 	.JALRE_o(JALRE_tb), 
 	.UJE_o(UJE_tb),
+  .SB_EN_o(BE_tb),
 	.IR_EN_o(IR_EN_tb) , 
-	.IWR_EN_o(IWR_EN_tb), 
+	.IWR_EN_o(IWR_EN_tb),
+  .DR_EN_i(DR_EN_tbff),
+  .DT_i(DT_tb), 
 	.ALUop_o(ALUop_tb) );
  
   atomRVCORE_alu alu( 
@@ -99,7 +103,7 @@ module atomRVCORE_top #(
   	.RD_i(RD_tb),//
   	.RWR_EN_i(RWR_EN_tb),
   	.R2_i(REG2_tb),
-  	.BE_i(BE_tb),//
+  	.SB_EN_i(BE_tb),//
   	.UJE_i(UJE_tb),//
   	.JALRE_i(JALRE_tb),//
   	.U_EN_i(U_EN_tb),//
@@ -126,7 +130,11 @@ module atomRVCORE_top #(
   	.result_i(result_tb), 
   	.DWR_EN_i(DWR_EN_tb),
   	.WR_o(WR_o_tbf), 
-  	.DR_EN_i(DR_EN_tb) );
+  	.DR_EN_i(DR_EN_tbf),
+    .DR_EN_o(DR_EN_tbff),
+    .DT_o(DT_tb)
+
+     );
  
 
 initial begin

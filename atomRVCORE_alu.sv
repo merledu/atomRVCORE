@@ -18,11 +18,11 @@ module atomRVCORE_alu #(
      input logic [REG_ADRESS_WIDTH-1:0] RD_i,
      input logic RWR_EN_i,
      input logic [DATAWIDTH-1:0] R2_i,
-     input logic BE_i,
      input logic UJE_i,
      input logic JALRE_i,
      input logic U_EN_i,
      input logic LUI_EN_i,
+     input logic SB_EN_i,
 	 output logic [DATAWIDTH-1:0] result_o,
      output logic [DATAWIDTH-1:0] address_o,//32 output from decode input to data memory
      output logic DR_EN_o,//Data read enable signal to DATA memory
@@ -47,16 +47,12 @@ module atomRVCORE_alu #(
 
  always_comb begin
 
-        if (BE_i==1'b1 || UJE_i==1'b1) begin     // if Branch enable then PC = PC + immediate
+        if (BE==1'b1 || UJE_i==1'b1) begin     // if Branch enable then PC = PC + immediate
             PC <= JAL_pc;
-            BE<=1'b1;
          end
         else if (JALRE_i==1'b1) begin // if Jump and link enable then PC = R[rs1] + immediate ,R[rd] = PC + 4
             PC <= JALRE_pc;
-            BE<=1'b1;
          end
-         else
-            BE<=1'b0;
 
 
      end
@@ -113,6 +109,8 @@ module atomRVCORE_alu #(
 
 
      end
+
+      assign BE     = (result == 32'd1 && SB_EN_i==1'b1 )?  1'b1 : 1'b0; 
 
     always_ff @(posedge clk_i) begin
     result_o<=result;

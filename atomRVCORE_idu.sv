@@ -7,18 +7,19 @@ module atomRVCORE_idu #(
 	)
 	(
 	   input clk_i,
-     input logic [DATAWIDTH-1:0] result_i,//ALU result input from alu to decide branch enable
      input logic [DATAWIDTH-1:0] instr_i,//32 BIT INSTRUCTION FROM FETCH UNIT
      input logic RWR_EN_if,
      input logic [REG_ADRESS_WIDTH-1:0] RD_if,
      input logic [DATAWIDTH-1:0] WR_if,
      input logic [DATAWIDTH-1:0] PC_i,
+     input logic DR_EN_i,
+     input logic [DATAWIDTH-1:0] DT_i,
 	   output logic [DATAWIDTH-1:0] immed_o,//32bit sign extended immedite output from decode and input to fetch unit
      output logic [DATAWIDTH-1:0] address_o,//32 output from decode input to data memory
      output logic [DATAWIDTH-1:0] operand_B_o,//32 bit operand to ALU either immediate or R2
      output logic U_EN_o,//U TYPE INSTRUCTION ENABLE
      output logic UJ_EN_o,//UJ TYPE INSTRUCTION ENABLE
-     output logic BE_o,//BRANCH ENABLE SIGNAL FROM decode to fetch unit
+     output logic SB_EN_o,//BRANCH ENABLE SIGNAL FROM decode to fetch unit
      output logic JALRE_o,//JUMP AND LINK ENABLE SIGNAL FROM decode to FETCH
      output logic UJE_o,//UJ ENABLE SIGNAL FROM DECODE UNIT TO FETCH
      output logic IWR_EN_o,//INSTRUCTION WRITE ENABLE SIGNAL TO WRITE ON INSTRUCTION MEM
@@ -92,8 +93,10 @@ always @ (posedge clk_i)begin
 
                 R[0]<=32'd0;
 
-            else
-                 R[RD_if]<=WR_if;       
+             if (DR_EN_i==1'b1)
+                 R[RD_if]<=DT_i; 
+                 else 
+                 R[RD_if]<=WR_if;     
 
         end
 
@@ -178,7 +181,6 @@ assign operand_A =R1;
      ALUop_o<=ALUop;
      U_EN_o<=U_EN;
      UJ_EN_o<=UJ_EN;
-     BE_o<=BE;
      JALRE_o<=JALRE;
      UJE_o<=UJE;
      DR_EN_o<=DR_EN;
@@ -187,6 +189,7 @@ assign operand_A =R1;
      RD_o<=RD;
      LUI_EN_o<=LUI_EN;
      R2_o<=R2;
+     SB_EN_o<=SB_EN;
         end
 
     always_comb begin 
@@ -220,7 +223,7 @@ assign operand_A =R1;
 
     assign DWR_EN = (opcode == STORE)?   1'b1 : 1'b0; 
 
-    assign BE     = (result_i == 32'd1 && SB_EN==1'b1 )?  1'b1 : 1'b0; 
+   
 
     assign DR_EN       = (opcode == LOAD)?    1'b1 : 1'b0; 
 
