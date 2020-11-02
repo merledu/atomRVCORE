@@ -14,6 +14,9 @@ module atomRVCORE_idu #(
      input logic [DATAWIDTH-1:0] PC_i,
      input logic DR_EN_i,
      input logic [DATAWIDTH-1:0] DT_i,
+     input logic [DATAWIDTH-1:0] result_i,
+     input logic [1:0] fwd1_i,
+     input logic [1:0] fwd2_i,
 	   output logic [DATAWIDTH-1:0] immed_o,//32bit sign extended immedite output from decode and input to fetch unit
      output logic [DATAWIDTH-1:0] address_o,//32 output from decode input to data memory
      output logic [DATAWIDTH-1:0] operand_B_o,//32 bit operand to ALU either immediate or R2
@@ -32,8 +35,11 @@ module atomRVCORE_idu #(
      output logic [REG_ADRESS_WIDTH-1:0] RD_o,
      output logic [DATAWIDTH-1:0] R2_o,
      output logic RWR_EN_o,
+     output logic fwd_o,
      output logic [DATAWIDTH-1:0] PC_o,
-     output logic LUI_EN_o
+     output logic LUI_EN_o,
+     output logic [REG_ADRESS_WIDTH-1:0] RS1_o,
+     output logic  [REG_ADRESS_WIDTH-1:0] RS2_o
      );
   
     logic I_EN;
@@ -63,6 +69,7 @@ module atomRVCORE_idu #(
     logic [DATAWIDTH-1:0] address;
     logic [DATAWIDTH-1:0] operand_B;
     logic [DATAWIDTH-1:0] operand_A;
+    logic fwd;
 
     logic [DATAWIDTH-1:0] R [0:REGISTERS-1];
 integer i;
@@ -104,12 +111,43 @@ end
 
 assign R1 = R[RS1];
 
-assign R2 = R[RS2];
-assign operand_A =R1;
+assign R2 = (fwd==1'b0)?  R[RS2]:operand_B;
 
+assign operand_A = (fwd1_i==2'd1)? result_i:
+                   (fwd1_i==2'd2)? WR_if:R1;
+
+ always @(*) begin
+
+   if (DR_EN==1'b1 || DWR_EN==1'b1) begin
+     address=immed+R1;
+    end
+        
+     if (fwd2_i==2'd1 || fwd2_i ==2'd2) begin
+
+        if (fwd2_i == 2'd1) begin
+        operand_B = result_i;
+        fwd=1'b1;
+        end
+
+        else if(fwd2_i==2'd2) begin
+        operand_B = WR_if;
+        fwd=1'b1;
+        end
+      end
+      else begin
+        fwd=1'b0;
+
+       if (SB_EN == 1'b1 || R_EN == 1'b1 || S_EN == 1'b1 )
+       operand_B= R2;
+      else
+         operand_B =  immed;
+
+      end
+ 
+ end
 
 	always_comb begin 
-     opcode= instr_i[6:0] ;
+   opcode= instr_i[6:0] ;
       
        // address=32'd0;
 
@@ -163,14 +201,9 @@ assign operand_A =R1;
          func7 =7'd0;  
          end
 
-        if (DR_EN==1'b1 || DWR_EN)
-        address=immed+R1;
-        if (SB_EN == 1'b1 || R_EN == 1'b1 || S_EN == 1'b1 )
-            operand_B= R2;
-        else
-         operand_B =  immed;
+      
 
-     end
+  end
 
     always_ff @(posedge clk_i) begin   //CREATING STAGE FOR DECODE WITH CLOCK EDGE
      PC_o<=PC_i;
@@ -189,7 +222,10 @@ assign operand_A =R1;
      RD_o<=RD;
      LUI_EN_o<=LUI_EN;
      R2_o<=R2;
+     RS1_o<=RS1;
+     RS2_o<=RS2;
      SB_EN_o<=SB_EN;
+     fwd_o<= fwd;
         end
 
     always_comb begin 

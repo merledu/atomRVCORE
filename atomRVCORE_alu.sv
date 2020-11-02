@@ -21,6 +21,10 @@ module atomRVCORE_alu #(
      input logic UJE_i,
      input logic JALRE_i,
      input logic U_EN_i,
+     input logic [REG_ADRESS_WIDTH-1:0] RD_m_i,
+     input logic [REG_ADRESS_WIDTH-1:0] RD_wb_i,
+     input logic [REG_ADRESS_WIDTH-1:0] RS1_i,
+     input logic [REG_ADRESS_WIDTH-1:0] RS2_i,
      input logic LUI_EN_i,
      input logic SB_EN_i,
 	 output logic [DATAWIDTH-1:0] result_o,
@@ -31,7 +35,9 @@ module atomRVCORE_alu #(
      output logic [REG_ADRESS_WIDTH-1:0] RD_o,
      output logic RWR_EN_o,
      output logic [DATAWIDTH-1:0] R2_o,
-     output logic BE_o 
+     output logic BE_o,
+     output logic [1:0] fwd1_o,
+     output logic [1:0] fwd2_o 
 	
      );
 
@@ -46,7 +52,6 @@ module atomRVCORE_alu #(
 
 
  always_comb begin
-
         if (BE==1'b1 || UJE_i==1'b1) begin     // if Branch enable then PC = PC + immediate
             PC <= JAL_pc;
          end
@@ -55,14 +60,38 @@ module atomRVCORE_alu #(
          end
 
 
+          if(RS1_i==RD_m_i) begin  
+          fwd1_o=2'd1;
+          end
+          else if(RS2_i==RD_m_i) begin
+          fwd2_o=2'd1;
+          end
+          else if(RS1_i==RD_wb_i) begin  
+          fwd1_o=2'd2;
+          end
+          else if(RS2_i==RD_wb_i) begin
+          fwd2_o=2'd2;
+          end
+          else
+          fwd2_o = 2'd0;
+          fwd1_o = 2'd0;
+
+
+
+
      end
     assign JALRE_pc=operand_A+immed_i;
 
     assign JAL_pc=PC_i+{immed_i[30:0],1'd0};
 
     always_comb begin 
+
+
+
+
+
         assign shamt = operand_B[MAX_SHIFT-1:0];
-        result = 
+       result = 
 
             (ALUop_i == 6'b000_001)? operand_A + operand_B:                //ADDI,ADDIW,ADD
 

@@ -41,6 +41,14 @@ module atomRVCORE_top #(
 	logic [DATAWIDTH-1:0] REG2_tbf;
   logic [DATAWIDTH-1:0] DT_tb;
   logic DR_EN_tbff;
+  logic [1:0] fwd1_tb;
+  logic [1:0] fwd2_tb;
+  logic stall_tb;
+  logic [REG_ADRESS_WIDTH-1:0] RS1_tb;
+  logic [REG_ADRESS_WIDTH-1:0] RS2_tb;
+  logic [REG_ADRESS_WIDTH-1:0] RS1_tbf;
+  logic [REG_ADRESS_WIDTH-1:0] RS2_tbf;
+  logic fwd_tb;
 	
   atomRVCORE_ifu fetchUnit( 
   	.clk_i(clk_o), //
@@ -49,8 +57,8 @@ module atomRVCORE_top #(
   	.instruction_o(instrF_tb),// 
   	.PC_instr_o(PC_instr_tb),//, 
   	.BE_i(BE_tbf),//
-  	.PC_i(PC_tff)//
-  	 );
+  	.PC_i(PC_tff),
+    .stall_i(stall_tb));
  
   atomRVCORE_iccm instrMEM(
   	.clk_i(clk_o),// 
@@ -67,28 +75,35 @@ module atomRVCORE_top #(
   	.instr_i(instrF_tb), // 
   	.RWR_EN_if(RWR_EN_tbff) ,// 
   	.RD_if(RD_tbff) ,//
+    .fwd_o(fwd_tb),
   	.WR_if(WR_o_tbf)  ,// 
   	.DWR_EN_o(DWR_EN_tb) ,// 
   	.DR_EN_o(DR_EN_tb) , //
   	.operand_A_o(operand_A_tb) ,// 
   	.U_EN_o(U_EN_tb),// 
   	.address_o(address_tb),
-	.UJ_EN_o(UJ_EN_tb) ,
-	.RWR_EN_o(RWR_EN_tb),  
-	. RD_o(RD_tb),  
-	.R2_o(REG2_tb) , 
-	.immed_o(immed_tb), 
-	.operand_B_o(operand_B_tb),
-	.LUI_EN_o(LUI_EN_tb), 
-	.PCrst_o(PCrst_tb) ,// 
-	.JALRE_o(JALRE_tb), 
-	.UJE_o(UJE_tb),
-  .SB_EN_o(BE_tb),
-	.IR_EN_o(IR_EN_tb) , 
-	.IWR_EN_o(IWR_EN_tb),
-  .DR_EN_i(DR_EN_tbff),
-  .DT_i(DT_tb), 
-	.ALUop_o(ALUop_tb) );
+	  .UJ_EN_o(UJ_EN_tb) ,
+	  .RWR_EN_o(RWR_EN_tb),  
+	  . RD_o(RD_tb),  
+	  .R2_o(REG2_tb) , 
+	  .immed_o(immed_tb), 
+	  .operand_B_o(operand_B_tb),
+	  .LUI_EN_o(LUI_EN_tb), 
+	  .PCrst_o(PCrst_tb) ,// 
+	  .JALRE_o(JALRE_tb), 
+	  .UJE_o(UJE_tb),
+    .SB_EN_o(BE_tb),
+	  .IR_EN_o(IR_EN_tb) , 
+	  .IWR_EN_o(IWR_EN_tb),
+    .DR_EN_i(DR_EN_tbff),
+    .DT_i(DT_tb), 
+    .RS1_o(RS1_tb),
+    .RS2_o(RS2_tb),
+	  .ALUop_o(ALUop_tb),
+    .fwd1_i(fwd1_tb),
+    .fwd2_i(fwd2_tb),
+    .result_i(result_tb)
+   );
  
   atomRVCORE_alu alu( 
   	.clk_i(clk_o), //
@@ -106,14 +121,20 @@ module atomRVCORE_top #(
   	.SB_EN_i(BE_tb),//
   	.UJE_i(UJE_tb),//
   	.JALRE_i(JALRE_tb),//
-  	.U_EN_i(U_EN_tb),//
+  	.RS1_i(RS1_tb),
+    .RS2_i(RS2_tb),
+    .U_EN_i(U_EN_tb),//
   	.LUI_EN_i(LUI_EN_tb),//
- 	.result_o(result_tb),
+ 	  .result_o(result_tb),
   	.address_o(address_tbf),//
   	.DR_EN_o(DR_EN_tbf),//
   	.DWR_EN_o(DWR_EN_tbf),//
   	.PC_o(PC_tff)  ,//
   	.RD_o(RD_tbf),
+    .fwd1_o(fwd1_tb),
+    .fwd2_o(fwd2_tb),
+    .RD_m_i(RD_tbf),
+    .RD_wb_i(RD_tbff),
   	.RWR_EN_o(RWR_EN_tbf),//
   	.R2_o(REG2_tbf),
   	.BE_o(BE_tbf)//
@@ -128,7 +149,13 @@ module atomRVCORE_top #(
   	.DT_i(REG2_tbf) , 
   	.address_i(address_tbf),//
   	.result_i(result_tb), 
-  	.DWR_EN_i(DWR_EN_tb),
+    .RS1_i(RS1_tb),
+    .RS2_i(RS2_tb),
+    .RS1_o(RS1_tbf),
+    .R2fwd_i(REG2_tb),
+    .fwd_i(fwd_tb),
+    .RS2_o(RS2_tbf),
+  	.DWR_EN_i(DWR_EN_tbf),
   	.WR_o(WR_o_tbf), 
   	.DR_EN_i(DR_EN_tbf),
     .DR_EN_o(DR_EN_tbff),

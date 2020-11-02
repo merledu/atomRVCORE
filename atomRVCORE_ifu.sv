@@ -11,6 +11,7 @@ module atomRVCORE_ifu #(
      input logic PCrst_i,
      input logic [DATAWIDTH-1:0] PC_i,
      input logic [DATAWIDTH-1:0] instruction_i,
+     input logic stall_i,
      output logic [DATAWIDTH-1:0] instruction_o
      );
 
@@ -33,6 +34,8 @@ module atomRVCORE_ifu #(
     	else if (BE_i==1'b1) begin     // if Branch enable then PC = PC + immediate
     		PC <= PC_i;
     	 end
+    	 else if (stall_i==1'b1)
+    	 	PC <= PC;
     	 else
     	 	PC <= PC + 32'd4;
 
