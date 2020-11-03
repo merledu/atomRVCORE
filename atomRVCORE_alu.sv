@@ -60,16 +60,16 @@ module atomRVCORE_alu #(
          end
 
 
-          if(RS1_i==RD_m_i) begin  
+          if(RS1_i==RD_m_i && RD_m_i!=5'd0 ) begin  
           fwd1_o=2'd1;
           end
-          else if(RS2_i==RD_m_i) begin
+          else if(RS2_i==RD_m_i && RD_m_i!=5'd0 ) begin
           fwd2_o=2'd1;
           end
-          else if(RS1_i==RD_wb_i) begin  
+          else if(RS1_i==RD_wb_i && RD_wb_i!=5'd0 ) begin  
           fwd1_o=2'd2;
           end
-          else if(RS2_i==RD_wb_i) begin
+          else if(RS2_i==RD_wb_i && RD_wb_i!=5'd0 ) begin
           fwd2_o=2'd2;
           end
           else

@@ -39,6 +39,7 @@ module atomRVCORE_idu #(
      output logic [DATAWIDTH-1:0] PC_o,
      output logic LUI_EN_o,
      output logic [REG_ADRESS_WIDTH-1:0] RS1_o,
+     output logic [DATAWIDTH-1:0] operand_B_f_o,
      output logic  [REG_ADRESS_WIDTH-1:0] RS2_o
      );
   
@@ -70,6 +71,7 @@ module atomRVCORE_idu #(
     logic [DATAWIDTH-1:0] operand_B;
     logic [DATAWIDTH-1:0] operand_A;
     logic fwd;
+    logic [DATAWIDTH-1:0] operand_B_f;
 
     logic [DATAWIDTH-1:0] R [0:REGISTERS-1];
 integer i;
@@ -125,12 +127,12 @@ assign operand_A = (fwd1_i==2'd1)? result_i:
      if (fwd2_i==2'd1 || fwd2_i ==2'd2) begin
 
         if (fwd2_i == 2'd1) begin
-        operand_B = result_i;
+        operand_B_f = result_i;
         fwd=1'b1;
         end
 
         else if(fwd2_i==2'd2) begin
-        operand_B = WR_if;
+        operand_B_f = WR_if;
         fwd=1'b1;
         end
       end
@@ -204,6 +206,7 @@ assign operand_A = (fwd1_i==2'd1)? result_i:
       
 
   end
+     
 
     always_ff @(posedge clk_i) begin   //CREATING STAGE FOR DECODE WITH CLOCK EDGE
      PC_o<=PC_i;
@@ -211,6 +214,7 @@ assign operand_A = (fwd1_i==2'd1)? result_i:
      address_o<=address;
      operand_B_o<=operand_B;
      operand_A_o<=operand_A;
+     operand_B_f_o<=operand_B_f;
      ALUop_o<=ALUop;
      U_EN_o<=U_EN;
      UJ_EN_o<=UJ_EN;
@@ -222,10 +226,11 @@ assign operand_A = (fwd1_i==2'd1)? result_i:
      RD_o<=RD;
      LUI_EN_o<=LUI_EN;
      R2_o<=R2;
-     RS1_o<=RS1;
-     RS2_o<=RS2;
+   
      SB_EN_o<=SB_EN;
      fwd_o<= fwd;
+     RS1_o=RS1;
+     RS2_o=RS2;
         end
 
     always_comb begin 

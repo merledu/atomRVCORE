@@ -84,7 +84,8 @@ module atomRVCORE_top #(
   	.address_o(address_tb),
 	  .UJ_EN_o(UJ_EN_tb) ,
 	  .RWR_EN_o(RWR_EN_tb),  
-	  . RD_o(RD_tb),  
+	  . RD_o(RD_tb),
+    .operand_B_f_o(operand_B_tbf),  
 	  .R2_o(REG2_tb) , 
 	  .immed_o(immed_tb), 
 	  .operand_B_o(operand_B_tb),
@@ -112,6 +113,7 @@ module atomRVCORE_top #(
   	.immed_i(immed_tb),//
   	.operand_B(operand_B_tb), //
   	.operand_A(operand_A_tb),
+    .operand_B_f_i(operand_B_tbf),
   	.address_i(address_tb),//
   	.DR_EN_i(DR_EN_tb),//
   	.DWR_EN_i(DWR_EN_tb),//
